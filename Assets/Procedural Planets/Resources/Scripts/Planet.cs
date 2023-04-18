@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Planet : MonoBehaviour
 {
-    [Range(2, 384)]
+    [Range(10, 32)]
     public int resolution = 10;
     public bool autoUpdate = true;
+    public float maskMul, custMul, normalizeFactor;
     public enum FaceRenderMask {All, Top, Bottom, Left, Right, Front, Back}
     public FaceRenderMask faceRenderMask;
     public ShapeSettings shapeSettings;
@@ -25,6 +26,9 @@ public class Planet : MonoBehaviour
 
     void OnValidate()
     {
+        shapeGenerator.maskMul = maskMul;
+        shapeGenerator.customMul = custMul;
+        
         if(autoUpdate)
         {
             GeneratePlanet();
@@ -95,6 +99,7 @@ public class Planet : MonoBehaviour
         {
             if(meshFilters[i].gameObject.activeSelf)
             {
+                terrainFaces[i].normalizeFactor = normalizeFactor;
                 terrainFaces[i].ConstructMesh();
             }
         }

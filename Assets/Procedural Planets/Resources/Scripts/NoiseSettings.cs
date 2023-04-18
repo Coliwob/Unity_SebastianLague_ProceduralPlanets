@@ -27,6 +27,7 @@ public class NoiseSettings
     public float persistence = 0.5f;
     public Vector3 center;
     public float minValue;
+    public float maxValue;
     }
     
     [System.Serializable]

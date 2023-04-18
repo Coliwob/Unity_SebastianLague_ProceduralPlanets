@@ -182,6 +182,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Ambiant_Occlusion: 0.25
     - _BASE_COLOR_WEIGHT: 1
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
@@ -200,7 +201,7 @@ Material:
     - _HighestPoint: 1
     - _LowestPoint: 0.64
     - _METALNESS: 0
-    - _Metallic: 0.074
+    - _Metallic: 0.1
     - _Metallic0: 0
     - _Metallic1: 0
     - _Metallic2: 0
@@ -216,6 +217,7 @@ Material:
     - _REFLECTIONS_WEIGHT: 1
     - _SPECULAR_IOR: 1.5
     - _SPECULAR_ROUGHNESS: 0
+    - _Smoothness: 0.1
     - _Smoothness0: 0.5
     - _Smoothness1: 0.5
     - _Smoothness2: 0.5
@@ -234,7 +236,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _REFLECTIONS_COLOR: {r: 1, g: 1, b: 1, a: 1}
     - _SPECULAR_COLOR: {r: 1, g: 1, b: 1, a: 0}
-    - _elevationMinMax: {r: -0.09617044, g: 0.08770318, b: 0, a: 0}
+    - _elevationMinMax: {r: -0.12099271, g: 0.09108734, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3983290014707163602
 MonoBehaviour:
