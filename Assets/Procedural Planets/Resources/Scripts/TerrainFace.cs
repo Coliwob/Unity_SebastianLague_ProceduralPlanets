@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class TerrainFace
     Vector3 localUp;
     Vector3 axisA;
     Vector3 axisB;
-
+    Vector3[][] edgeNormals;
     public float normalizeFactor;
 
     public TerrainFace(ShapeGenerator shapeGenerator, Mesh mesh, int resolution, Vector3 localUp)
@@ -22,11 +23,18 @@ public class TerrainFace
 
         axisA = new Vector3(localUp.y, localUp.z, localUp.x);
         axisB = Vector3.Cross(localUp, axisA);
+        
     }
     
     public void ConstructMesh()
     {
         Vector3[] vertices = new Vector3[resolution * resolution];
+        edgeNormals = new Vector3[4][];
+        edgeNormals[0] = new Vector3[resolution];
+        edgeNormals[1] = new Vector3[resolution];
+        edgeNormals[2] = new Vector3[resolution];
+        edgeNormals[3] = new Vector3[resolution];
+        
         int[] triangles = new int[(resolution - 1) * (resolution - 1) * 6];
         int triIndex = 0;
 
@@ -37,7 +45,7 @@ public class TerrainFace
             for (int x = 0; x < resolution; x++)
             {
                 int i = x + y * resolution;
-                Vector2 percent = new Vector2(x, y) / (finalResolution - 1);
+                Vector2 percent = new Vector2(x, y) / (resolution - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere1 = pointOnUnitCube.normalized;
                 Vector3 pointOnUnitSphere2 = TangentialNormalize(pointOnUnitCube);
@@ -61,11 +69,20 @@ public class TerrainFace
                 }
             }
         }
+
+
+        
+        
+        //edgeNormals[0] = Enumerable.Range(0, resolution).Select(i => mesh.normals[i]).ToArray();
+        //edgeNormals[1] = Enumerable.Range(0, resolution).Select(i => mesh.normals[i * resolution]).ToArray();
+        //edgeNormals[2] = Enumerable.Range(0, resolution).Select(i => mesh.normals[(resolution - 1) + i * resolution]).ToArray();
+        //edgeNormals[3] = Enumerable.Range(0, resolution).Select(i => mesh.normals[(resolution - 1) * resolution + i]).ToArray();
+        
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.RecalculateTangents();
         mesh.RecalculateNormals();
-        mesh = TrimMesh(mesh, resolution);
         mesh.uv = uv;
     }
 
@@ -140,56 +157,12 @@ public class TerrainFace
         mesh.uv = uv;
     }
 
-    public static Mesh TrimMesh(Mesh mesh, int resolution)
+    public void Stitch (TerrainFace top, TerrainFace bottom, TerrainFace previous)
     {
-        Vector3[] vertices = mesh.vertices;
-        int xLength = resolution + 1;
-
-        // Calculate the number of vertices to remove from each side
-        int verticesToRemove = (xLength + 1) * 2;
-
-        // Calculate the new arrays
-        Vector3[] newVertices = new Vector3[vertices.Length - verticesToRemove];
-        Vector2[] newUVs = new Vector2[newVertices.Length];
-        int[] newTriangles = mesh.triangles;
-
-        // Copy the existing vertices and UVs into the new arrays
-        int index = 0;
-        for (int i = 0; i < vertices.Length; i++)
+        int startIndex = (resolution - 1) * resolution;
+        for (int i = 0; i < resolution; i++)
         {
-            int x = i % xLength;
-            int y = i / xLength;
-            if (x > 0 && x < xLength - 1 && y > 0 && y < resolution)
-            {
-                newVertices[index] = vertices[i];
-                newUVs[index] = mesh.uv[i];
-                index++;
-            }
+            mesh.vertices[startIndex + i] = top.edgeNormals[0][0];
         }
-
-        // Calculate the new triangles
-        for (int i = 0; i < newTriangles.Length; i += 3)
-        {
-            int a = newTriangles[i];
-            int b = newTriangles[i + 1];
-            int c = newTriangles[i + 2];
-            if (a >= verticesToRemove) a -= verticesToRemove;
-            if (b >= verticesToRemove) b -= verticesToRemove;
-            if (c >= verticesToRemove) c -= verticesToRemove;
-            newTriangles[i] = a;
-            newTriangles[i + 1] = b;
-            newTriangles[i + 2] = c;
-        }
-
-        // Create a new mesh and assign the new arrays
-        Mesh newMesh = new Mesh();
-        newMesh.vertices = newVertices;
-        newMesh.triangles = newTriangles;
-        newMesh.uv = newUVs;
-        newMesh.normals = mesh.normals;
-        newMesh.RecalculateBounds();
-
-        return newMesh;
     }
-
 }

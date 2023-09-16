@@ -22,10 +22,10 @@ MonoBehaviour:
         strength: 0.005
         numLayers: 8
         baseRoughness: 0.5
-        roughness: 2.01
+        roughness: 3
         persistence: 0.5
-        center: {x: -1.21, y: 0, z: 0}
-        minValue: 1
+        center: {x: -0.69, y: 0, z: 0}
+        minValue: 0.23
         maxValue: 1
       ridgidNoiseSettings:
         strength: -0.02

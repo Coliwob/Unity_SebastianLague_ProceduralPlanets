@@ -196,7 +196,7 @@ MonoBehaviour:
         minValue: 0
         maxValue: 0
         weightMultiplier: 0.8
-    noiseOffset: 1.44
+    noiseOffset: 1.3
     noiseStrength: 0.1
     blendAmount: 0.244
   oceanColor:

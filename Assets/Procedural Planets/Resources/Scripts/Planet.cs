@@ -8,6 +8,7 @@ public class Planet : MonoBehaviour
     public int resolution = 10;
     public bool autoUpdate = true;
     public float maskMul, custMul, normalizeFactor;
+
     public enum FaceRenderMask {All, Top, Bottom, Left, Right, Front, Back}
     public FaceRenderMask faceRenderMask;
     public ShapeSettings shapeSettings;
@@ -40,6 +41,7 @@ public class Planet : MonoBehaviour
 
         shapeGenerator.UpdateSettings(shapeSettings);
         colorGenerator.UpdateSettings(colorSettings);
+        
         if (meshFilters == null || meshFilters.Length == 0)
         {
             meshFilters = new MeshFilter[6];
@@ -104,6 +106,11 @@ public class Planet : MonoBehaviour
             }
         }
         colorGenerator.UpdateElevation(shapeGenerator.elevationMinMax);
+
+        for (int i = 2; i < 5; i++)
+        {
+            terrainFaces[i].Stitch(terrainFaces[0], terrainFaces[1], terrainFaces[i+1]);
+        }
     }
 
     void GenerateColors()
@@ -117,4 +124,6 @@ public class Planet : MonoBehaviour
             }
         }
     }
+
+ 
 }
